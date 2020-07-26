@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON CRUD</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <h1>JSON CRUD</h1>
+    <p>Edit or delete data</p>
+    Id : <input type="text" id="id">
+    Name : <input type="text" id="name">
+    <br>
+    <br>
+    <button id="edit">Edit</button>
+    <button id="delete">Delete</button>
+    <button id="get">View</button>
+
+
+<!-- client side jsvascript -->
+<script type="text/javascript">
+    var editBtn = $('#edit');
+    var deleteBtn = $('#delete');
+    var viewBtn = $('#get');
+
+    editBtn.on('click',function()
+    {
+        var id = $('#id').val();
+        var name = $('#name').val();
+
+        if(id !== "" && name !== "")
+        {
+            $ajax.editFile({id, name},()=>{
+                $('#id').val("");
+                $('#name').val("");
+            });
+        }
+        else
+        {
+            alert("please provide Id & Name to edit");
+        }
+    })
+
+    viewBtn.on('click',function()
+    {
+        $ajax.getFile({id, name},(resp)=>{
+            console.log(resp)
+        });
+    })
+
+    deleteBtn.on('click',function()
+    {
+        var id = $('#id').val();
+
+        if(id !== "")
+        {
+            $ajax.deleteInFile(id,()=>{
+                $('#id').val("");
+                $('#name').val("");
+            });
+        }
+        else
+        {
+            alert("please provide Id to delete");
+        }
+    })
+
+
+    var $ajax = 
+    {
+        editFile : function(param, successCallback)
+        {
+            $.ajax({
+                url: `/file/?id=${param.id}&name=${param.name}`,
+                type: "POST",
+                success: function(res) 
+                {
+                successCallback();
+                }
+            });
+        },
+
+        deleteInFile : function(id, successCallback)
+        {
+            $.ajax({
+                url: `/file/?id=${id}`,
+                type: "DELETE",
+                success: function(res) 
+                {
+                successCallback();
+                }
+            });
+        },
+
+        getFile : function(id, successCallback)
+        {
+            $.ajax({
+                url: `/file`,
+                type: "DELETE",
+                success: function(res) 
+                {
+                successCallback(res);
+                }
+            });
+        }
+    }
+</script>
+</body>
+</html>
